@@ -1,0 +1,36 @@
+<?php 
+
+header('Content-Type: application/json');
+$offers = array();
+$offers[0] = array(
+		"id" => "9930",
+		"type" => "ActionFair",
+		//"item1" => "Boost.Name.Income|Gem:-100",
+		"item1" => "Boost.Name.GoldElixir|Gem:-100",
+		"item2" => "Windmill|Gold:1",
+		"duration" => 28800, # 8h
+);
+$response = "{}";
+if (!preg_match("#actions#", $response)) {
+
+	$data = array(
+		'status' => 0,
+		'refund' => array(),
+		'options' => array('cheater' => "false"),
+		'actions' => array(),
+		'actionChest' => array(),
+	);
+	$response = preg_replace("#{.*}#", json_encode($data), $response);
+}
+$codes = array();
+foreach ($offers as $offer) {
+	$codes[] = json_encode($offer);
+}
+$code = implode(',',$codes);
+
+if (!preg_match('#"actions":\[\]#', $response)) {
+	$code.=',';
+}
+$response = preg_replace('#"actions":\[#', '"actions":['.$code, $response);
+
+echo $response;
